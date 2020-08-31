@@ -1,0 +1,5 @@
+tolerations: 
+  - key: "k3s-controlplane"
+    operator: "Equal"
+    value: "true"
+    effect: "NoSchedule"
