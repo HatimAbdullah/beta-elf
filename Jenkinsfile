@@ -5,6 +5,7 @@ pipeline {
 apiVersion: v1
 kind: Pod
 metadata:
+  name: elf-pod
   labels:
     service_name: elf-service
     service_type: REST
@@ -17,21 +18,17 @@ spec:
     tty: true
     volumeMounts: 
     - mountPath: /.kube/config.yaml
-      name: file
+      name: kconf
   - name: kubectl
     image: bryandollery/terraform-packer-aws-alpine
     command:
     - cat
     tty: true
   volumes:
-  - name: docker-sock
-    hostPath:
-      path: /var/run/docker.sock  
-      type: Socket
   - name: kconf
     hostPath:
       path: /etc/rancher/k3s/k3s.yaml
-      type: file
+      type: File
 
 """
     }
@@ -43,7 +40,7 @@ spec:
   stages {
       stage("Build") {
           steps {
-              container('dnd') {
+              container('kubectl') {
                   sh """
                       export KUBECONFIG=/kube/config.yaml             
                       helm repo add elastic https://helm.elastic.co
