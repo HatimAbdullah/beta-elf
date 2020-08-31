@@ -11,25 +11,11 @@ metadata:
     service_type: REST
 spec:
   containers:
-  - name: dnd
-    image: docker:latest
-    command: 
-    - cat
-    tty: true
-  - name: kubectl
+  - name: helm
     image: bryandollery/terraform-packer-aws-alpine
     command:
     - cat
     tty: true
-    volumeMounts: 
-    - mountPath: /.kube/config.yaml
-      name: kconf
-  volumes:
-  - name: kconf
-    hostPath:
-      path: /etc/rancher/k3s/k3s.yaml
-      type: File
-
 """
     }
   }
@@ -40,18 +26,15 @@ spec:
   stages {
       stage("Build") {
           steps {
-              container('kubectl') {
+              container('helm') {
                   sh """
-                      kubectl get pods --all-namespaces
-                      ls -a /etc
-                      ls -a
-                     
-                        
                       helm repo add elastic https://helm.elastic.co
                       helm repo add fluent https://fluent.github.io/helm-charts
                       helm repo update
-                      
-                      helm install fluens-ins fluent/fluent-bit
+                      helm install elasticsearch elastic/elasticsearch --version=7.9.0 --namespace=elf
+                      helm install fluent-bit fluent/fluent-bit --namespace=elf
+                      helm install kibana elastic/kibana --version=7.9.0 --namespace=elf --set service.type=NodePort
+                      kubectl run random-logger --image=chentex/random-logger -n elf
                   """
               }
           }
