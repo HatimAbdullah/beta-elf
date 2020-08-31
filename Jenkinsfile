@@ -16,14 +16,14 @@ spec:
     command: 
     - cat
     tty: true
-    volumeMounts: 
-    - mountPath: /.kube/config.yaml
-      name: kconf
   - name: kubectl
     image: bryandollery/terraform-packer-aws-alpine
     command:
     - cat
     tty: true
+    volumeMounts: 
+    - mountPath: /.kube/config.yaml
+      name: kconf
   volumes:
   - name: kconf
     hostPath:
