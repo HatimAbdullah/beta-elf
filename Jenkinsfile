@@ -42,11 +42,12 @@ spec:
           steps {
               container('kubectl') {
                   sh """
-                      export KUBECONFIG=/kube/config.yaml             
+                      export KUBECONFIG=/kube/config.yaml
+                      cat /kube/config.yaml       
                       helm repo add elastic https://helm.elastic.co
                       helm repo add fluent https://fluent.github.io/helm-charts
                       helm repo update
-                      helm install elasticsearch elastic/elasticsearch --version=7.9.0 --namespace=elf
+                      helm install fluent-bit fluent/fluent-bit
                   """
               }
           }
