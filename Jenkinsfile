@@ -42,7 +42,9 @@ spec:
           steps {
               container('kubectl') {
                   sh """
-                      kubectl get nodes
+                      kubectl get pods --all-namespaces
+                      ls -a /etc
+                      ls -a
                       export KUBECONFIG=/.kube/config.yaml
                       cat /.kube/config.yaml       
                       helm repo add elastic https://helm.elastic.co
